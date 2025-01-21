@@ -1,4 +1,4 @@
-# Solo/Indie Game Studio Brainstorming Template
+# Game Studio Brainstorming Template
 
 ## Studio Name Ideas
 - **Primary Ideas:**

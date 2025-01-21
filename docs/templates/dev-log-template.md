@@ -31,10 +31,12 @@
 - Brainstorm or reflect on design ideas, architecture patterns, or potential improvements.
 -  <!--Your entry here or N/A if not applicable for this entry-->
 <!--
+
 - Example prompts:
   - "What if the player interactions were asynchronous instead of real-time?"
   - "How could ECS improve performance in this system?"
   - "Does my current design support scalability? How can it improve?"
+  
 -->
 
 #### Next Steps

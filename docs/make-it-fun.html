@@ -1,0 +1,207 @@
+<div>
+    Points: <span id="points">0</span>
+</div>
+<div class="parent">
+    <button class="button" onclick="clickButton(1)">Click Me</button>
+    <button class="button" id="ghost" onclick="clickButton(-1)">Click Me</button>
+</div>
+<div id="stateControls"></div>
+<style>
+    .button {
+        position: absolute;
+        top: 200px;
+        left: 200px;
+        -webkit-user-select: none;
+        /* Safari */
+        -ms-user-select: none;
+        /* IE 10 and IE 11 */
+        user-select: none;
+        /* Standard syntax */
+    }
+
+    .parent {
+        width: 400px;
+        height: 400px;
+        border: 1px solid black;
+    }
+</style>
+<script>
+    const state = {
+        points: 0,
+        changeColor: true,
+        runFromMouse: true,
+        runThreshold: 10,
+        direction: {
+            x: 1,
+            y: 1
+        },
+        isRunning: false,
+        soundOnClick: true,
+        updateCount: true,
+        idleMove: true,
+        idleMoveSpeed: {
+            x: 5,
+            y: 5
+        },
+        mouse: {
+            x: 0,
+            y: 0
+        },
+        ghost: true,
+    }
+    const btn = document.querySelector("button");
+    const ghost = document.querySelector("#ghost");
+    const container = document.getElementById("stateControls");
+    const updateStateUI = () => {
+
+
+        for (let key in state) {
+            if (typeof state[key] != "boolean" || key === "isRunning") {
+                continue;
+            }
+            let btn = document.querySelector(`[data-key="${key}"]`);
+
+            if (!btn) { // Create button if it doesn't exist
+                btn = document.createElement("button");
+                btn.setAttribute("data-key", key);
+                btn.onclick = () => {
+                    state[key] = !state[key]; // Toggle value
+                    updateStateUI(); // Refresh UI
+                };
+                container.appendChild(btn);
+            }
+
+            // Update button text
+            btn.textContent = `${key}: ${state[key]}`;
+        }
+    }
+    document.addEventListener('mousemove', function (event) {
+        state.mouse.x = event.clientX;
+        state.mouse.y = event.clientY;
+    });
+    const pointsDisplay = document.getElementById("points");
+    const clickButton = (points) => {
+        if (state.updateCount) {
+            state.points += points;
+            pointsDisplay.innerText = `${state.points}`;
+        }
+        if (state.changeColor) {
+            const randColor = "#" + ((1 << 24) * Math.random() | 0).toString(16).padStart(6, "0");
+            btn.style.backgroundColor = randColor;
+            ghost.style.backgroundColor = randColor
+        }
+    }
+    const getCurrentVal = (v) => {
+        try {
+            return parseInt(v.replace("px", "").trim()) || 0;
+        }
+        catch (e) {
+
+        }
+        return 0;
+    }
+    // set initial top/left
+    const computedStyle = window.getComputedStyle(btn);
+    btn.style.top = computedStyle.top;
+    btn.style.left = computedStyle.left;
+    const computedStyleGhost = window.getComputedStyle(ghost);
+    ghost.style.top = computedStyleGhost.top;
+    ghost.style.left = computedStyleGhost.left;
+    // end set initial top/left
+    const parent = btn.parentNode;
+    const parentBounds = parent.getBoundingClientRect();
+
+    const moveGhost = () => {
+        ghost.style.display = state.ghost ? "block" : "none";
+        if (!state.ghost) {
+            return;
+        }
+        const btnBounds = btn.getBoundingClientRect();
+        const parentBounds = parent.getBoundingClientRect();
+
+        // Mirror across X-axis (horizontal flip)
+        let mirrorLeft = parentBounds.right - (btnBounds.left - parentBounds.left) - btnBounds.width;
+
+        // Mirror across Y-axis (vertical flip)
+        let mirrorTop = parentBounds.bottom - (btnBounds.top - parentBounds.top) - btnBounds.height;
+
+        ghost.style.left = `${mirrorLeft}px`;
+        ghost.style.top = `${mirrorTop}px`;
+    };
+    const doIdleMove = () => {
+        if (state.idleMove) {
+            if (state.isRunning) {
+                return;
+            }
+            let curTop = getCurrentVal(btn.style.top);
+            let newTop = curTop + (state.direction.y * state.idleMoveSpeed.y);
+            let curLeft = getCurrentVal(btn.style.left);
+            let newLeft = curLeft + (state.direction.x * state.idleMoveSpeed.x);
+
+
+            const btnBounds = btn.getBoundingClientRect();
+            if (btnBounds.left <= parentBounds.left || btnBounds.right >= parentBounds.right) {
+                state.direction.x *= -1;
+                // newTop = curTop + (state.direction.y * state.idleMoveSpeed.y);
+                newLeft = curLeft + (state.direction.x * state.idleMoveSpeed.x);
+
+            }
+            if (btnBounds.top <= parentBounds.top || btnBounds.bottom >= parentBounds.bottom) {
+                state.direction.y *= -1;
+                //newLeft = curLeft + (state.direction.x * state.idleMoveSpeed.x);
+                newTop = curTop + (state.direction.y * state.idleMoveSpeed.y);
+
+            }
+
+            btn.style.top = `${newTop}px`;
+            btn.style.left = `${newLeft}px`;
+        }
+    }
+    const doRunFromMouse = () => {
+        if (state.runFromMouse) {
+            const btnBounds = btn.getBoundingClientRect();
+            const btnCenter = {
+                x: btnBounds.left + (btnBounds.width / 2),
+                y: btnBounds.top + (btnBounds.width / 2)
+            }
+            const distance = {
+                x: btnCenter.x - state.mouse.x,
+                y: btnCenter.y - state.mouse.y
+            }
+            const magnitude = Math.sqrt(distance.x ** 2 + distance.y ** 2);
+
+            if (magnitude === 0 || magnitude > (state.runThreshold ** 2)) {
+                state.isRunning = false;
+                return;
+            }
+            state.isRunning = true;
+            // Normalize direction vector
+            state.direction.x = Math.round(distance.x / magnitude)
+            state.direction.y = Math.round(distance.y / magnitude)
+            let newTop = getCurrentVal(btn.style.top) + state.direction.y * state.idleMoveSpeed.y * 1.25;
+            let newLeft = getCurrentVal(btn.style.left) + state.direction.x * state.idleMoveSpeed.x * 1.25;
+            // Teleport to opposite side if out of bounds (Snake-like behavior)
+            if (newLeft < parentBounds.left) {
+                newLeft = parentBounds.right - btnBounds.width - 5; // Teleport to right
+            } else if (newLeft + btnBounds.width > parentBounds.right) {
+                newLeft = parentBounds.left + 5; // Teleport to left
+            }
+
+            if (newTop < parentBounds.top) {
+                newTop = parentBounds.bottom - btnBounds.height - 5; // Teleport to bottom
+            } else if (newTop + btnBounds.height > parentBounds.bottom) {
+                newTop = parentBounds.top + 5; // Teleport to top
+            }
+
+
+            btn.style.top = `${newTop}px`;
+            btn.style.left = `${newLeft}px`;
+        }
+    }
+    setInterval(() => {
+        doIdleMove();
+        doRunFromMouse();
+        moveGhost();
+        updateStateUI();
+    }, 16)
+</script>

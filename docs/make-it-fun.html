@@ -266,13 +266,13 @@
             if (btnBounds.left <= parentBounds.left || btnBounds.right >= parentBounds.right) {
                 state.direction.x *= -1;
                 // newTop = curTop + (state.direction.y * state.idleMoveSpeed.y);
-                newLeft = curLeft + (state.direction.x * state.idleMoveSpeed.x);
+                newLeft = curLeft + (state.direction.x * (state.speedMod + state.idleMoveSpeed.x));
 
             }
             if (btnBounds.top <= parentBounds.top || btnBounds.bottom >= parentBounds.bottom) {
                 state.direction.y *= -1;
                 //newLeft = curLeft + (state.direction.x * state.idleMoveSpeed.x);
-                newTop = curTop + (state.direction.y * state.idleMoveSpeed.y);
+                newTop = curTop + (state.direction.y * (state.speedMod + state.idleMoveSpeed.y));
 
             }
 

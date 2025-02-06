@@ -1,16 +1,31 @@
 <div>
     Points: <span id="points">0</span>
+    Time: <span id="time">30</span>
 </div>
-<div class="parent">
-    <button class="button" onclick="clickButton(1)">Click Me</button>
-    <button class="button" id="ghost" onclick="clickButton(-1)">Click Me</button>
+<div class="row">
+    <div class="parent">
+        <button class="button" tabindex="-1" onfocus="this.blur()" onclick="clickButton(1)">Click Me</button>
+        <button class="button" tabindex="-1" onfocus="this.blur()" id="ghost" onclick="clickButton(-1)">Click
+            Me</button>
+    </div>
+    <div id="board">
+
+    </div>
 </div>
+
 <div id="stateControls"></div>
 <style>
-    .button {
-        position: absolute;
-        top: 200px;
-        left: 200px;
+    .row {
+        display: flex;
+    }
+
+    #board {
+        text-align: left;
+        margin-left: auto;
+        margin-right: auto
+    }
+
+    body {
         -webkit-user-select: none;
         /* Safari */
         -ms-user-select: none;
@@ -19,15 +34,30 @@
         /* Standard syntax */
     }
 
+    .button {
+        position: absolute;
+        top: 200px;
+        left: 200px;
+
+    }
+
     .parent {
+        margin-left: 5em;
+        margin-bottom: 10em;
         width: 400px;
         height: 400px;
         border: 1px solid black;
     }
 </style>
 <script>
+    //disable right-click
+    document.addEventListener("contextmenu", (event) => event.preventDefault());
+    const sound = new Audio("assets/mixkit-arcade-game-jump-coin-216.wav");
     const state = {
         points: 0,
+        speedMod: 1,
+        time: 30,
+        gameEnd: null,
         changeColor: true,
         runFromMouse: true,
         runThreshold: 10,
@@ -40,21 +70,102 @@
         updateCount: true,
         idleMove: true,
         idleMoveSpeed: {
-            x: 5,
-            y: 5
+            x: 1,
+            y: 1
         },
         mouse: {
             x: 0,
             y: 0
         },
         ghost: true,
-    }
+        enableScoreSubmit: false
+    };
     const btn = document.querySelector("button");
     const ghost = document.querySelector("#ghost");
     const container = document.getElementById("stateControls");
+    const timeDisplay = document.getElementById("time");
+    const pointsDisplay = document.getElementById("points");
+    const board = document.getElementById("board");
+    let isSubmittingScore = false;
+    const datastore = {
+        boardId: "7664a2bf-2cbf-4920-67c2-08dd464cd0f3",
+        simpleboardsKey: "BgIFElwFEUtERx9RU0lHUwAUXwgXT1FMVUEAUBcRWkwfUVhX",// Generally don't expose private api keys
+        rapidKey: "AVdXFlBXRBBZFRQRCVdGAwZBEFkXSgNVXUJTBQVDUUYcW1AOAAtRQ0NYRBpSVlVAUFs=",// Generally don't expose private api keys
+        unlock(data, secret) {
+            // obfuscation is not security ;)
+            return [...atob(data)].map((c, i) => String.fromCharCode(c.charCodeAt() ^ secret.charCodeAt(i % secret.length))).join('');
+        },
+        async save(user, score) {
+            if (isSubmittingScore) {
+                return;
+            }
+            isSubmittingScore = true;
+            const detooler = async (content, callback) => { // honestly this doesn't really solve much
+                // oh no, more API keys in the public eye (hard limitted so no big deal)
+                const options = {
+                    method: 'GET',
+                    headers: {
+                        'x-rapidapi-key': `${this.unlock(this.rapidKey, "badsecurity")}`,
+                        'x-rapidapi-host': 'profanity-filter-by-api-ninjas.p.rapidapi.com'
+                    }
+                };
+                const url = `https://profanity-filter-by-api-ninjas.p.rapidapi.com/v1/profanityfilter?text=${user}`;
+                const response = await fetch(url, options);
+                const result = await response.json();
+
+                await callback(result);
+            };
+            await detooler(user, async (r) => {
+
+                // create your own leaderboard https://simpleboards.dev/
+
+                const url = "https://api.simpleboards.dev/api/entries";
+
+                const headers = {
+                    "x-api-key": this.unlock(this.simpleboardsKey, "badsecurity"),
+                    "Content-Type": "application/json"
+                };
+                const request = {
+                    method: "POST",
+                    headers: headers,
+                    body: JSON.stringify({ playerDisplayName: r.censored, score: score, leaderboardId: this.boardId })
+                };
+                await fetch(url, request).then(resp => resp.json()).then(data => {
+                    console.log("Data after submit", data);
+                    toast.success("Saved score");
+                }).catch(e => {
+                    console.log("Error submitting score", e);
+                    toast.error("Error saving score");
+                });
+            });
+
+            isSubmittingScore = false;
+        },
+        async load() {
+            return fetch(`https://api.simpleboards.dev/api/leaderboards/${this.boardId}/entries`, { method: "GET", headers: { "x-api-key": this.unlock(this.simpleboardsKey, "badsecurity") } })
+                .then(resp => resp.json())
+                .then(data => {
+                    console.log("leaderboard data", data);
+                    if (Array.isArray(data)) {
+                        board.innerHTML = "<h5>Leaderboard</h5><ol>";
+                        data.forEach(entry => {
+                            board.innerHTML += (`<li>${entry.playerDisplayName} | ${entry.score}</li>`);
+                        });
+                        board.innerHTML += "</ol>";
+                    }
+                })
+                .catch(e => {
+                    console.log("Error fetching scores", e);
+                });
+            console.log("Response", resp);
+
+        }
+    };
+
     const updateStateUI = () => {
 
-
+        timeDisplay.innerText = state.currentTime;
+        pointsDisplay.innerText = `${state.points}`;
         for (let key in state) {
             if (typeof state[key] != "boolean" || key === "isRunning") {
                 continue;
@@ -72,25 +183,31 @@
             }
 
             // Update button text
-            btn.textContent = `${key}: ${state[key]}`;
+            btn.textContent = `${key}`;//: ${state[key]}`;
+            btn.style.backgroundColor = state[key] ? "grey" : "white";
         }
-    }
+    };
     document.addEventListener('mousemove', function (event) {
         state.mouse.x = event.clientX;
         state.mouse.y = event.clientY;
     });
-    const pointsDisplay = document.getElementById("points");
+
     const clickButton = (points) => {
         if (state.updateCount) {
             state.points += points;
-            pointsDisplay.innerText = `${state.points}`;
+
         }
         if (state.changeColor) {
             const randColor = "#" + ((1 << 24) * Math.random() | 0).toString(16).padStart(6, "0");
             btn.style.backgroundColor = randColor;
-            ghost.style.backgroundColor = randColor
+            ghost.style.backgroundColor = randColor;
         }
-    }
+        if(state.soundOnClick){
+            sound.currentTime = 0;
+
+            sound.play();
+        }
+    };
     const getCurrentVal = (v) => {
         try {
             return parseInt(v.replace("px", "").trim()) || 0;
@@ -99,7 +216,7 @@
 
         }
         return 0;
-    }
+    };
     // set initial top/left
     const computedStyle = window.getComputedStyle(btn);
     btn.style.top = computedStyle.top;
@@ -133,10 +250,16 @@
             if (state.isRunning) {
                 return;
             }
+            if (!state.direction.x) {
+                state.direction.x = Math.random() < 0.5 ? 1 : -1;
+            }
+            if (!state.direction.y) {
+                state.direction.y = Math.random() < 0.5 ? 1 : -1;
+            }
             let curTop = getCurrentVal(btn.style.top);
-            let newTop = curTop + (state.direction.y * state.idleMoveSpeed.y);
+            let newTop = curTop + (state.direction.y * (state.speedMod + state.idleMoveSpeed.y));
             let curLeft = getCurrentVal(btn.style.left);
-            let newLeft = curLeft + (state.direction.x * state.idleMoveSpeed.x);
+            let newLeft = curLeft + (state.direction.x * (state.speedMod + state.idleMoveSpeed.x));
 
 
             const btnBounds = btn.getBoundingClientRect();
@@ -156,18 +279,18 @@
             btn.style.top = `${newTop}px`;
             btn.style.left = `${newLeft}px`;
         }
-    }
+    };
     const doRunFromMouse = () => {
         if (state.runFromMouse) {
             const btnBounds = btn.getBoundingClientRect();
             const btnCenter = {
                 x: btnBounds.left + (btnBounds.width / 2),
                 y: btnBounds.top + (btnBounds.width / 2)
-            }
+            };
             const distance = {
                 x: btnCenter.x - state.mouse.x,
                 y: btnCenter.y - state.mouse.y
-            }
+            };
             const magnitude = Math.sqrt(distance.x ** 2 + distance.y ** 2);
 
             if (magnitude === 0 || magnitude > (state.runThreshold ** 2)) {
@@ -176,10 +299,10 @@
             }
             state.isRunning = true;
             // Normalize direction vector
-            state.direction.x = Math.round(distance.x / magnitude)
-            state.direction.y = Math.round(distance.y / magnitude)
-            let newTop = getCurrentVal(btn.style.top) + state.direction.y * state.idleMoveSpeed.y * 1.25;
-            let newLeft = getCurrentVal(btn.style.left) + state.direction.x * state.idleMoveSpeed.x * 1.25;
+            state.direction.x = Math.round(distance.x / magnitude);
+            state.direction.y = Math.round(distance.y / magnitude);
+            let newTop = getCurrentVal(btn.style.top) + state.direction.y * (state.speedMod + state.idleMoveSpeed.y) * 1.25;
+            let newLeft = getCurrentVal(btn.style.left) + state.direction.x * (state.speedMod + state.idleMoveSpeed.x) * 1.25;
             // Teleport to opposite side if out of bounds (Snake-like behavior)
             if (newLeft < parentBounds.left) {
                 newLeft = parentBounds.right - btnBounds.width - 5; // Teleport to right
@@ -197,11 +320,49 @@
             btn.style.top = `${newTop}px`;
             btn.style.left = `${newLeft}px`;
         }
-    }
+    };
+    const start = () => {
+        state.points = 0;
+        state.gameEnd = new Date().getTime() + (state.time * 1000);
+        state.currentTime = state.time;
+        datastore.load();
+    };
+
     setInterval(() => {
+
+        if (!state.gameEnd) {
+            start();
+        }
+        //time
+        const time = new Date().getTime();
+        let diff = (state.gameEnd - time) / 1000;
+        state.currentTime = diff;
+        state.speedMod = parseInt((state.time - diff) * .1)+1;
         doIdleMove();
         doRunFromMouse();
         moveGhost();
         updateStateUI();
+
+        if (time >= state.gameEnd) {
+            state.gameEnd = 0;
+            if (state.enableScoreSubmit) {
+                const name = prompt("Enter your name to save your score");
+                if (!name) {
+                    toast.success("You chose to not save your score");
+                }
+                else {
+
+                    datastore.save(name, state.points).then(() => {
+                        start();// reset game
+                    });
+
+                }
+            }
+            else {
+                start();
+            }
+        }
     }, 16)
 </script>
+<!-- tools -->
+<script src="http://catdad.github.io/tiny.cdn/lib/toast/1.0.0/toast.min.js"></script>

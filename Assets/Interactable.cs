@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -5,6 +6,19 @@ public class Interactable : MonoBehaviour {
     [Header("Events")]
     public UnityEvent onEnable;
     public UnityEvent onDisable;
+    [SerializeField] private bool startActive = true;
+
+    private void Awake()
+    {
+        if (startActive)
+        {
+            Enable();
+        }
+        else
+        {
+            Disable();
+        }
+    }
 
     public void Enable() {
         Debug.Log($"{gameObject.name} Enabled");

@@ -144,7 +144,7 @@ A **competitive medieval dueling card game** where players engage in **hidden co
 ### Tools
 - **Card design software (Photoshop).**  
 - **Prototyping in Tabletop Simulator or custom card printing.**
-- [text](https://opengameart.org/)
+- [Open Game Art](https://opengameart.org/)
 
 ---
 
@@ -166,7 +166,7 @@ A **competitive medieval dueling card game** where players engage in **hidden co
     <td><img src="./images/Impale.png" width="200"></td>
     <td><img src="./images/Slash.png" width="200"></td>
   </tr>
-  <tr><td colspan="3">https://opengameart.org/content/fantasy-action-icons-and-card-design</td></tr>
+  <tr><td colspan="3">[Fantasy Action Icons and Card Design](https://opengameart.org/content/fantasy-action-icons-and-card-design)</td></tr>
 </table>
 
 

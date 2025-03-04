@@ -96,10 +96,10 @@ Each move interacts in a **balanced 5-move combat system**:
 
 ## Recommended HP Chart
 
-| **Role**     | **Standard HP** | **Frenzy Mode HP** |
-|-------------|------------------|------------------|
-| **Knights**  | 5-7 HP  | **Base HP × 2 (e.g., 14 HP)**  |
-| **Commander** | **+50% of Knight HP** | **Knight HP × 1.5 (e.g., 21 HP)** |
+ **Role**     | **Standard HP** | **Frenzy Mode HP** 
+-------------|------------------|------------------
+ **Knights**  | 5-7 HP  | **Base HP × 2 (e.g., 14 HP)**  
+ **Commander** | **+50% of Knight HP** | **Knight HP × 1.5 (e.g., 21 HP)** 
 
 ---
 

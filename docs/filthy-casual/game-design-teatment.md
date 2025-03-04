@@ -166,7 +166,7 @@ A **competitive medieval dueling card game** where players engage in **hidden co
     <td><img src="./images/Impale.png" width="200"></td>
     <td><img src="./images/Slash.png" width="200"></td>
   </tr>
-  <tr><td>https://opengameart.org/content/fantasy-action-icons-and-card-design</td></tr>
+  <tr><td colspan="3">https://opengameart.org/content/fantasy-action-icons-and-card-design</td></tr>
 </table>
 
 

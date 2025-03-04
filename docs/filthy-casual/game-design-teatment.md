@@ -147,7 +147,7 @@ A **competitive medieval dueling card game** where players engage in **hidden co
 
 <table>
   <tr>
-    <td><img src="filthy-casual/images/Back.png" width="200"></td>
+    <td><img src="./images/Back.png" width="200"></td>
     <td><img src="filthy-casual/images/Cleave.png" width="200"></td>
     <td><img src="filthy-casual/images/Cross-Cut.png" width="200"></td>
   </tr>

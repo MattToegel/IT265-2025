@@ -148,13 +148,13 @@ A **competitive medieval dueling card game** where players engage in **hidden co
 <table>
   <tr>
     <td><img src="./images/Back.png" width="200"></td>
-    <td><img src="filthy-casual/images/Cleave.png" width="200"></td>
-    <td><img src="filthy-casual/images/Cross-Cut.png" width="200"></td>
+    <td><img src="./images/Cleave.png" width="200"></td>
+    <td><img src="./images/Cross-Cut.png" width="200"></td>
   </tr>
   <tr>
-    <td><img src="filthy-casual/images/Flurry.png" width="200"></td>
-    <td><img src="filthy-casual/images/Impale.png" width="200"></td>
-    <td><img src="filthy-casual/images/Slash.png" width="200"></td>
+    <td><img src="./images/Flurry.png" width="200"></td>
+    <td><img src="./images/Impale.png" width="200"></td>
+    <td><img src="./images/Slash.png" width="200"></td>
   </tr>
   <tr><td>https://opengameart.org/content/fantasy-action-icons-and-card-design</td></tr>
 </table>

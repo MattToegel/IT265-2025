@@ -32,6 +32,7 @@
 Each move interacts in a **balanced 5-move combat system**:
 
 ### **Win/Loss Table**
+
 | **Move**    | **Beats (2 Moves)**  | **Loses to (2 Moves)** |
 |------------|---------------------|---------------------|
 | **Slash**   | Impale, Flurry      | Cleave, Cross-Cut  |
@@ -94,6 +95,7 @@ Each move interacts in a **balanced 5-move combat system**:
 ---
 
 ## Recommended HP Chart
+
 | **Role**     | **Standard HP** | **Frenzy Mode HP** |
 |-------------|------------------|------------------|
 | **Knights**  | 5-7 HP  | **Base HP × 2 (e.g., 14 HP)**  |

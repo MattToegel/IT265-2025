@@ -56,7 +56,17 @@ A **competitive medieval dueling card game** where players engage in **hidden co
 2. **Hidden card selection & simultaneous reveal.**  
 3. **Parry system** (same move vs. same move = Parry chain).  
 4. **Deck depletion reshuffles** for continuous play.  
-5. **Multiplayer & Commander Mode variations.**  
+5. **Multiplayer & Commander Mode variations.** 
+
+#### **Win/Loss Table**
+
+| **Move**    | **Beats (2 Moves)**  | **Loses to (2 Moves)** |
+|------------|---------------------|---------------------|
+| **Slash**   | Impale, Flurry      | Cleave, Cross-Cut  |
+| **Cleave**  | Slash, Flurry       | Impale, Cross-Cut  |
+| **Impale**  | Cleave, Cross-Cut   | Slash, Flurry      |
+| **Cross-Cut** | Slash, Cleave      | Impale, Flurry     |
+| **Flurry**  | Impale, Cross-Cut   | Slash, Cleave      |
 
 ### Goals and Challenges
 - **Win duels by reducing the opponent’s HP to 0.**  

@@ -134,6 +134,6 @@ Each move interacts in a **balanced 5-move combat system**:
 
 ---
 
->This work by Matt Toegel is licensed under the Creative Commons Attribution-NonCommercial (CC BY-NC) license. You are free to share, copy, distribute, and transmit the work or adapt it for non-commercial purposes as long as you attribute the work to Matt Toegel, linking back to the original source (if applicable). This license does not permit commercial use of this work. When adapting the work, you must indicate if changes were made, but not in any way that suggests the licensor endorses you or your use. You may not apply legal terms or technological measures that restrict others from doing anything the license permits.
+>This work by Matt Toegel / Ethereal Lab is licensed under the Creative Commons Attribution-NonCommercial (CC BY-NC) license. You are free to share, copy, distribute, and transmit the work or adapt it for non-commercial purposes as long as you attribute the work to Matt Toegel / Ethereal Lab, linking back to the original source (if applicable). This license does not permit commercial use of this work. When adapting the work, you must indicate if changes were made, but not in any way that suggests the licensor endorses you or your use. You may not apply legal terms or technological measures that restrict others from doing anything the license permits.
 
 >For more information about the CC BY-NC license, visit [https://creativecommons.org/licenses/by-nc/4.0/](https://creativecommons.org/licenses/by-nc/4.0/).

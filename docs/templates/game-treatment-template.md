@@ -85,6 +85,15 @@ Ensure they are clear, structured, and intuitive.
 
 ---
 
+## Core Gameplay Loop
+
+Describe the repeating sequence of player actions that forms the core gameplay.
+
+Example:
+Explore → Fight enemies → Collect loot → Upgrade character → Repeat
+
+---
+
 ## Story and Setting
 
 ### Setting
@@ -112,6 +121,15 @@ Describe their motivations, personality traits, and influence on the player’s 
 Identify what makes your game stand out from others in its genre. 
 Highlight key features that differentiate it in the market. 
 -->
+
+---
+
+## Design Pillars
+
+Examples:
+1. Exploration should feel rewarding
+2. Systems should encourage experimentation
+3. Failure should teach the player
 
 ---
 
